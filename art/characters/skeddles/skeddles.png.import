@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxllgjcrdt3e6"
-path="res://.godot/imported/smiley.png-1b8cfda880f18dcdaaaa669e7c2b5396.ctex"
+uid="uid://bxsbc7vc6xsxi"
+path="res://.godot/imported/skeddles.png-4ca274f35083a7c24744fe91c97ab653.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/skeddles/smiley.png"
-dest_files=["res://.godot/imported/smiley.png-1b8cfda880f18dcdaaaa669e7c2b5396.ctex"]
+source_file="res://art/characters/skeddles/skeddles.png"
+dest_files=["res://.godot/imported/skeddles.png-4ca274f35083a7c24744fe91c97ab653.ctex"]
 
 [params]
 

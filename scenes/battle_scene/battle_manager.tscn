@@ -1,36 +1,71 @@
-[gd_scene load_steps=10 format=3 uid="uid://docc6xin1bqou"]
+[gd_scene load_steps=16 format=3 uid="uid://docc6xin1bqou"]
 
 [ext_resource type="Script" path="res://scripts/battle_system/battle_manager.gd" id="1_626np"]
 [ext_resource type="Texture2D" uid="uid://db0nefci05mgl" path="res://art/image (1).png" id="2_4xsu6"]
 [ext_resource type="FontFile" uid="uid://c56rtacbksa5q" path="res://art/04B_11__.TTF" id="3_ur4j6"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xg6sh"]
+bg_color = Color(0.270588, 0.266667, 0.313726, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dsukw"]
+bg_color = Color(1, 1, 1, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_of3p7"]
+bg_color = Color(0.270588, 0.266667, 0.313726, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8mnp2"]
+bg_color = Color(0.74902, 0.74902, 0.72549, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_if5kg"]
+bg_color = Color(1, 1, 1, 1)
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pt8cl"]
+content_margin_left = 1.0
+content_margin_right = 1.0
+bg_color = Color(0.494118, 0.501961, 0.392157, 1)
+
+[sub_resource type="Theme" id="Theme_6fqoa"]
+default_font = ExtResource("3_ur4j6")
+default_font_size = 6
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_disabled_color = Color(0.133333, 0.129412, 0.180392, 1)
+Button/colors/font_focus_color = Color(0.133333, 0.129412, 0.180392, 1)
+Button/colors/font_hover_color = Color(0.133333, 0.129412, 0.180392, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_xg6sh")
+Button/styles/focus = SubResource("StyleBoxFlat_dsukw")
+Button/styles/hover = SubResource("StyleBoxFlat_dsukw")
+Button/styles/normal = SubResource("StyleBoxFlat_of3p7")
+Button/styles/pressed = SubResource("StyleBoxFlat_of3p7")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_8mnp2")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_if5kg")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_if5kg")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_pt8cl")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_pt8cl")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bi14n"]
 bg_color = Color(0.133333, 0.129412, 0.180392, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_awppv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxss1"]
 bg_color = Color(0.270588, 0.266667, 0.313726, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08s7k"]
-bg_color = Color(0.270588, 0.266667, 0.313726, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_msqxd"]
+bg_color = Color(0.133333, 0.129412, 0.180392, 1)
 corner_detail = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5qmqv"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.494118, 0.501961, 0.392157, 1)
-corner_detail = 1
+[sub_resource type="Theme" id="Theme_na5e4"]
+Button/styles/normal = SubResource("StyleBoxFlat_msqxd")
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8v1di"]
+[sub_resource type="GDScript" id="GDScript_oytr6"]
+script/source = "extends Timer
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yoxqs"]
+func _on_timeout() -> void:
+	%Next.visible = !%Next.visible
+"
 
 [node name="BattleScene" type="CanvasLayer"]
 process_mode = 3
@@ -40,11 +75,10 @@ script = ExtResource("1_626np")
 [node name="Environment" type="Node2D" parent="."]
 unique_name_in_owner = true
 y_sort_enabled = true
-position = Vector2(1, -16)
 
 [node name="Background" type="Sprite2D" parent="Environment"]
 unique_name_in_owner = true
-position = Vector2(121, 84)
+position = Vector2(121, 65)
 texture = ExtResource("2_4xsu6")
 hframes = 3
 vframes = 3
@@ -52,14 +86,16 @@ vframes = 3
 [node name="AllyContainer" type="Marker2D" parent="Environment"]
 unique_name_in_owner = true
 y_sort_enabled = true
-position = Vector2(60, 110)
+position = Vector2(60, 91)
 
 [node name="EnemyContainer" type="Marker2D" parent="Environment"]
 unique_name_in_owner = true
 y_sort_enabled = true
-position = Vector2(180, 110)
+position = Vector2(180, 91)
 
 [node name="UI" type="Control" parent="."]
+unique_name_in_owner = true
+z_index = 5
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,23 +103,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme = SubResource("Theme_6fqoa")
 
-[node name="Panel" type="Panel" parent="UI"]
+[node name="PlayerPanel" type="Panel" parent="UI"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -36.0
+offset_top = -39.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_bi14n")
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/PlayerPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 8
@@ -91,12 +129,152 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
-[node name="TextPrompt" type="Control" parent="UI/Panel/MarginContainer"]
+[node name="Actions" type="HBoxContainer" parent="UI/PlayerPanel/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MainAction" type="Control" parent="UI/PlayerPanel/MarginContainer/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="ActionContainer" type="VBoxContainer" parent="UI/PlayerPanel/MarginContainer/Actions/MainAction"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="AttackButton" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attack"
+
+[node name="SkillButton" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 0
+disabled = true
+text = "Skill"
+
+[node name="ItemButton" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 0
+text = "Item"
+
+[node name="RunButton" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/align_to_largest_stylebox = 0
+theme_override_font_sizes/font_size = 0
+text = "Run"
+
+[node name="Menu" type="Control" parent="UI/PlayerPanel/MarginContainer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Panel" type="Panel" parent="UI/PlayerPanel/MarginContainer/Actions/Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_oxss1")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/PlayerPanel/MarginContainer/Actions/Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 1
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 1
+theme_override_constants/margin_bottom = 1
+
+[node name="AttackMenu" type="Control" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SkillMenu" type="ScrollContainer" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = SubResource("Theme_na5e4")
+follow_focus = true
+
+[node name="SkillContainer" type="VBoxContainer" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/SkillMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="Button" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/SkillMenu/SkillContainer"]
+layout_mode = 2
+text = "asd"
+
+[node name="Button2" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/SkillMenu/SkillContainer"]
+layout_mode = 2
+text = "asd"
+
+[node name="Button3" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/SkillMenu/SkillContainer"]
+layout_mode = 2
+text = "asd"
+
+[node name="Button4" type="Button" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/SkillMenu/SkillContainer"]
+layout_mode = 2
+text = "asd"
+
+[node name="ItemMenu" type="ScrollContainer" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+follow_focus = true
+
+[node name="ItemContainer" type="VBoxContainer" parent="UI/PlayerPanel/MarginContainer/Actions/Menu/MarginContainer/ItemMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="ActionInfo" type="Control" parent="UI/PlayerPanel/MarginContainer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InfoPanel" type="Panel" parent="UI/PlayerPanel/MarginContainer/Actions/ActionInfo"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_oxss1")
+
+[node name="DisplayText" type="Control" parent="UI/PlayerPanel/MarginContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Text" type="RichTextLabel" parent="UI/Panel/MarginContainer/TextPrompt"]
+[node name="Text" type="RichTextLabel" parent="UI/PlayerPanel/MarginContainer/DisplayText"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -105,15 +283,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/line_separation = 1
-theme_override_fonts/normal_font = ExtResource("3_ur4j6")
 theme_override_font_sizes/normal_font_size = 8
 bbcode_enabled = true
-text = "You tried to run!"
+text = "This is the Display Text UI"
 scroll_active = false
 scroll_following = true
 
-[node name="Next" type="Label" parent="UI/Panel/MarginContainer/TextPrompt"]
+[node name="Next" type="Label" parent="UI/PlayerPanel/MarginContainer/DisplayText"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -130,101 +308,10 @@ theme_override_fonts/font = ExtResource("3_ur4j6")
 theme_override_font_sizes/font_size = 8
 text = ">"
 
-[node name="BlinkNext" type="Timer" parent="UI/Panel/MarginContainer/TextPrompt/Next"]
+[node name="BlinkNext" type="Timer" parent="UI/PlayerPanel/MarginContainer/DisplayText/Next"]
 unique_name_in_owner = true
 wait_time = 0.8
-
-[node name="Actions" type="HBoxContainer" parent="UI/Panel/MarginContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-alignment = 1
-
-[node name="Attack" type="Button" parent="UI/Panel/MarginContainer/Actions"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.133333, 0.129412, 0.180392, 1)
-theme_override_fonts/font = ExtResource("3_ur4j6")
-theme_override_font_sizes/font_size = 8
-theme_override_styles/focus = SubResource("StyleBoxFlat_awppv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_08s7k")
-theme_override_styles/normal = SubResource("StyleBoxFlat_5qmqv")
-text = "Attack"
-
-[node name="Skill" type="Button" parent="UI/Panel/MarginContainer/Actions"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.133333, 0.129412, 0.180392, 1)
-theme_override_fonts/font = ExtResource("3_ur4j6")
-theme_override_font_sizes/font_size = 8
-theme_override_styles/focus = SubResource("StyleBoxFlat_awppv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_08s7k")
-theme_override_styles/normal = SubResource("StyleBoxFlat_5qmqv")
-text = "Skill"
-
-[node name="Item" type="Button" parent="UI/Panel/MarginContainer/Actions"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.133333, 0.129412, 0.180392, 1)
-theme_override_fonts/font = ExtResource("3_ur4j6")
-theme_override_font_sizes/font_size = 8
-theme_override_styles/focus = SubResource("StyleBoxFlat_awppv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_08s7k")
-theme_override_styles/normal = SubResource("StyleBoxFlat_5qmqv")
-text = "Item"
-
-[node name="Run" type="Button" parent="UI/Panel/MarginContainer/Actions"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.133333, 0.129412, 0.180392, 1)
-theme_override_fonts/font = ExtResource("3_ur4j6")
-theme_override_font_sizes/font_size = 8
-theme_override_styles/focus = SubResource("StyleBoxFlat_awppv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_08s7k")
-theme_override_styles/normal = SubResource("StyleBoxFlat_5qmqv")
-text = "Run"
-
-[node name="SelectPrompt" type="Control" parent="UI/Panel/MarginContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="CenterAlign" type="VBoxContainer" parent="UI/Panel/MarginContainer/SelectPrompt"]
-layout_mode = 2
-offset_right = 224.0
-offset_bottom = 28.0
-alignment = 1
-
-[node name="Selection" type="RichTextLabel" parent="UI/Panel/MarginContainer/SelectPrompt/CenterAlign"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/line_separation = 1
-theme_override_fonts/normal_font = ExtResource("3_ur4j6")
-theme_override_font_sizes/normal_font_size = 8
-bbcode_enabled = true
-text = "[center]*Select a target*"
-fit_content = true
-scroll_active = false
-scroll_following = true
-
-[node name="SelectCancel" type="Button" parent="UI/Panel/MarginContainer/SelectPrompt"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -9.0
-offset_top = -3.0
-offset_right = 6.0
-offset_bottom = 13.0
-grow_horizontal = 0
-theme_override_colors/font_color = Color(0.745098, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("3_ur4j6")
-theme_override_font_sizes/font_size = 8
-theme_override_styles/focus = SubResource("StyleBoxEmpty_8v1di")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_yoxqs")
-text = "X"
-flat = true
+script = SubResource("GDScript_oytr6")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -10
@@ -236,9 +323,10 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.12549, 0.12549, 0.12549, 1)
 
-[connection signal="timeout" from="UI/Panel/MarginContainer/TextPrompt/Next/BlinkNext" to="." method="_on_blink_next_timeout"]
-[connection signal="pressed" from="UI/Panel/MarginContainer/Actions/Attack" to="." method="_on_attack_pressed"]
-[connection signal="pressed" from="UI/Panel/MarginContainer/Actions/Skill" to="." method="_on_skill_pressed"]
-[connection signal="pressed" from="UI/Panel/MarginContainer/Actions/Item" to="." method="_on_item_pressed"]
-[connection signal="pressed" from="UI/Panel/MarginContainer/Actions/Run" to="." method="_on_run_pressed"]
-[connection signal="pressed" from="UI/Panel/MarginContainer/SelectPrompt/SelectCancel" to="." method="_on_select_cancel_pressed"]
+[connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/AttackButton" to="." method="show_action_menu" binds= [1]]
+[connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/AttackButton" to="." method="_on_attack_pressed" flags=3]
+[connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/SkillButton" to="." method="show_action_menu" binds= [2]]
+[connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/ItemButton" to="." method="show_action_menu" binds= [3]]
+[connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/RunButton" to="." method="show_action_menu" binds= [0]]
+[connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/RunButton" to="." method="_on_run_pressed"]
+[connection signal="timeout" from="UI/PlayerPanel/MarginContainer/DisplayText/Next/BlinkNext" to="UI/PlayerPanel/MarginContainer/DisplayText/Next/BlinkNext" method="_on_timeout"]

@@ -1,17 +1,18 @@
-[gd_scene load_steps=19 format=4 uid="uid://b364qqtpututw"]
+[gd_scene load_steps=20 format=4 uid="uid://b364qqtpututw"]
 
 [ext_resource type="PackedScene" uid="uid://dik8pqs6immb7" path="res://scenes/player.tscn" id="1_qpucf"]
 [ext_resource type="Texture2D" uid="uid://djqeqcpfbjjxi" path="res://art/tileset.png" id="1_qwsel"]
 [ext_resource type="PackedScene" uid="uid://rxiy1bn4tm2u" path="res://scenes/character.tscn" id="2_6dtdq"]
-[ext_resource type="Texture2D" uid="uid://bxsbc7vc6xsxi" path="res://characters/skeddles/skeddles.png" id="3_dnasa"]
+[ext_resource type="Texture2D" uid="uid://bxsbc7vc6xsxi" path="res://art/characters/skeddles/skeddles.png" id="3_dnasa"]
 [ext_resource type="Script" path="res://scripts/character_sheet/character_sheet.gd" id="5_67ydd"]
 [ext_resource type="Script" path="res://scripts/battle_system/battle_trigger.gd" id="5_yord7"]
+[ext_resource type="Resource" uid="uid://75xe5isavtju" path="res://resource/skill/lightning.tres" id="6_4oij4"]
 [ext_resource type="Script" path="res://scripts/battle_system/ai/CharacterAP.gd" id="6_8c77f"]
-[ext_resource type="Script" path="res://scripts/character_sheet/skill.gd" id="6_g0na8"]
-[ext_resource type="Texture2D" uid="uid://dxllgjcrdt3e6" path="res://characters/skeddles/smiley.png" id="7_qsdja"]
-[ext_resource type="Resource" uid="uid://dlddn7gpxeu45" path="res://resource/ActionPriorities/enemy_smiley.tres" id="10_inias"]
+[ext_resource type="Resource" uid="uid://dm02dqyd5x646" path="res://resource/skill/spin_to_wheel.tres" id="7_63jel"]
+[ext_resource type="Texture2D" uid="uid://dxllgjcrdt3e6" path="res://art/characters/skeddles/smiley.png" id="7_qsdja"]
+[ext_resource type="Resource" uid="uid://dlddn7gpxeu45" path="res://resource/action_priorities/enemy_smiley.tres" id="10_inias"]
 [ext_resource type="Script" path="res://scripts/battle_system/ai/ActionPriority.gd" id="10_ocnws"]
-[ext_resource type="Resource" uid="uid://dkf51paik6ls2" path="res://resource/CharacterSheet/skeddles.tres" id="12_c3lmx"]
+[ext_resource type="Resource" uid="uid://dkf51paik6ls2" path="res://resource/character_sheet/skeddles.tres" id="12_c3lmx"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54e3y"]
 texture = ExtResource("1_qwsel")
@@ -52,29 +53,32 @@ texture = ExtResource("1_qwsel")
 physics_layer_0/collision_layer = 2
 sources/0 = SubResource("TileSetAtlasSource_54e3y")
 
-[sub_resource type="Resource" id="Resource_xc0kg"]
+[sub_resource type="Resource" id="Resource_u82ws"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
-char_name = "Skeddles"
+name = "Skeddles"
 sprite_sheet = ExtResource("3_dnasa")
 max_hp = 10
 max_mana = 0
-dmg = 2
+dmg = 1
 def = 0
 magic = 0
-skill = Array[ExtResource("6_g0na8")]([])
+skills = {
+ExtResource("6_4oij4"): 0,
+ExtResource("7_63jel"): 1
+}
 
-[sub_resource type="Resource" id="Resource_r0yap"]
+[sub_resource type="Resource" id="Resource_4j0yf"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
-char_name = "Smiley"
+name = "Smiley"
 sprite_sheet = ExtResource("7_qsdja")
 max_hp = 3
 max_mana = 0
 dmg = 1
 def = 0
 magic = 0
-skill = Array[ExtResource("6_g0na8")]([])
+skills = {}
 
 [sub_resource type="Resource" id="Resource_0v6bm"]
 script = ExtResource("6_8c77f")
@@ -109,7 +113,7 @@ character_name = "skeddles"
 sprite_sheet = ExtResource("3_dnasa")
 
 [node name="Player" parent="Player" instance=ExtResource("1_qpucf")]
-party = Array[ExtResource("5_67ydd")]([SubResource("Resource_xc0kg"), SubResource("Resource_r0yap")])
+party = Array[ExtResource("5_67ydd")]([SubResource("Resource_u82ws"), SubResource("Resource_4j0yf")])
 
 [node name="BattleTrigger" type="Area2D" parent="."]
 z_index = 2

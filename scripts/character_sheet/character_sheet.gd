@@ -1,6 +1,6 @@
 class_name CharacterSheet extends Resource
 
-@export var char_name : String
+@export var name : String
 @export var sprite_sheet : CompressedTexture2D
 
 @export_group("Stats")
@@ -42,8 +42,8 @@ signal mana_changed(value : int, max : int)
 
 
 @export_group("Skills")
-@export var skill : Array[Skill]
-
+#@export var skills : Array[Skill]
+@export var skills : Dictionary
 
 var unit_ref : Unit
 

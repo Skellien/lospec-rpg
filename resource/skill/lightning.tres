@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillResource" load_steps=2 format=3 uid="uid://75xe5isavtju"]
+
+[ext_resource type="Script" path="res://scripts/skill/skill_resource.gd" id="1_rbtdn"]
+
+[resource]
+script = ExtResource("1_rbtdn")
+name = "Lightning"
+atk_type = 1
+mana_cost = 3
+cooldown = 1
+target_group = 0
+target_type = 1
+description = "Cast lightning from the sky that randomly strikes foes."
