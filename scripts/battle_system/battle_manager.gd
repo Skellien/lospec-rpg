@@ -51,6 +51,7 @@ var prev_focused : Control
 
 func _input(event: InputEvent):
 	#TODO REMOVE THIS
+	#Doesn't even stop the turn loop or any awaits, so this causes bugs
 	if event is InputEventKey && event.pressed:
 		match(event.keycode):
 			KEY_R:
@@ -76,6 +77,10 @@ func _input(event: InputEvent):
 
 func _ready() -> void:
 	end_selection.connect(func() -> void:
+		if selected_index != -1:
+			prev_focused = null
+			is_unit_selecting = false
+		
 		for c in selection_index_changed.get_connections():
 			selection_index_changed.disconnect(c.callable)
 		)
@@ -88,7 +93,7 @@ func _ready() -> void:
 	
 	for i : int in range(start_index, 0, -1):
 		act_btn[i].focus_neighbor_top = act_btn[i - 1].get_path()
-	
+
 
 func _process(delta : float) -> void:
 	if typed_text < text_length:
@@ -187,7 +192,7 @@ func spawn_unit(char_sheet : CharacterSheet, group : Unit.Group, unit_position :
 	
 	var unit : Unit = UNIT.instantiate()
 	parent_node.add_child.call_deferred(unit)
-	unit.setup.call_deferred(char_sheet, group, self)
+	unit.setup.call_deferred(char_sheet, group, group_unit.size(), self)
 	unit.position = unit_position
 	
 	group_unit.append(unit)
@@ -209,7 +214,7 @@ func turn_loop() -> void:
 			enemy.perform_ai_action(self)
 			await end_turn
 			if is_fight_ended: return
-	
+
 
 func remove_ally_unit(char_sheet : CharacterSheet) -> void:
 	ally_units.erase(char_sheet.unit_ref)
@@ -217,17 +222,17 @@ func remove_ally_unit(char_sheet : CharacterSheet) -> void:
 
 func remove_enemy_unit(char_sheet : CharacterSheet) -> void:
 	enemy_units.erase(char_sheet.unit_ref)
-	
+
 
 func win() -> void:
-	#TODO EXP and Money based on enemy(?)
+	#TODO EXP, Money, and ITEMS based on enemy(?)
 	await display_text(["You came out victorious!", "[wave][rainbow]Awesome!"])
 	return_to_world()
-	
+
 
 func lose() -> void:
 	print("lose")
-	
+
 
 func return_to_world() -> void:
 	Globals.game_world.emit()
@@ -251,7 +256,7 @@ func show_actions(unit : Unit) -> void:
 	
 	disable_button(%ItemButton, Globals.player_inv.is_empty())
 	
-	show_action_menu(UIMenuState.NONE)
+	show_action_menu(UIMenuState.ATTACK)
 	%AttackButton.grab_focus()
 
 
@@ -281,32 +286,45 @@ func initialize_action_menu(container : Control, array : Array, left_path : Cont
 	
 	temp_btn = btn_array[btn_array.size() - 1]
 	temp_btn.focus_neighbor_bottom = temp_btn.get_path()
-	
-	return
 
 
 func show_action_menu(menu : UIMenuState) -> void:
 	%InfoPanel.hide()
-	%DisplayText.hide()
 	%Menu.show()
 	%AttackMenu.visible = menu == UIMenuState.ATTACK
 	%SkillMenu.visible = menu == UIMenuState.SKILL
 	%ItemMenu.visible = menu == UIMenuState.ITEM
 	
+	var action_button : Button
+	var container : Control
+	
 	match(menu):
 		UIMenuState.ATTACK:
-			pass
+			action_button = %AttackButton
 		UIMenuState.SKILL:
-			%SkillButton.focus_neighbor_right = %SkillContainer.get_child(0).get_path()
+			action_button = %SkillButton
+			container = %SkillContainer
 		UIMenuState.ITEM:
-			%ItemButton.focus_neighbor_right = %ItemContainer.get_child(0).get_path()
+			action_button = %ItemButton
+			container = %ItemContainer
+	
+	if action_button:
+		UiNavigation.connect_cancel(action_button.grab_focus)
+	else:
+		UiNavigation.clear_cancel()
+	
+	if container:
+		action_button.focus_neighbor_right = container.get_child(0).get_path()
 	
 	selected_index = -1
 	end_selection.emit()
 
 
-func select(group : BattleNamespace.TargetGroup, type : BattleNamespace.TargetType) -> void:
+func select(group : BattleNamespace.TargetGroup, type : BattleNamespace.TargetType, targetable_self : bool) -> Array[Unit]:
 	var selectable_units : Array[Unit]
+	var selected : Array[Unit] = []
+	var ally_units : Array[Unit] = self.ally_units.duplicate()
+	ally_units.reverse()
 	
 	match(group):
 		BattleNamespace.TargetGroup.ENEMY:
@@ -319,28 +337,25 @@ func select(group : BattleNamespace.TargetGroup, type : BattleNamespace.TargetTy
 			selectable_units = ally_units + enemy_units
 			
 		BattleNamespace.TargetGroup.SELF:
-			select_unit_single([cur_player_unit])
-			await end_selection
-			return
+			return [await select_unit_single([cur_player_unit])]
+	
+	if !targetable_self:
+		selectable_units.erase(cur_player_unit)
+	
+	selectable_units = selectable_units.duplicate()
 	
 	match(type):
 		BattleNamespace.TargetType.SINGLE:
-			select_unit_single(selectable_units)
+			return [await select_unit_single(selectable_units)]
 		BattleNamespace.TargetType.ALL:
-			select_group_all_unit(selectable_units)
+			return await select_group_all_unit(selectable_units)
 		BattleNamespace.TargetType.ALL_SEPERATE:
-			select_group_seperate_unit(selectable_units)
-		BattleNamespace.TargetType.OTHERS:
-			selectable_units.erase(cur_player_unit)
-			select_group_all_unit(selectable_units)
-		BattleNamespace.TargetType.OTHERS_SEPERATE:
-			selectable_units.erase(cur_player_unit)
-			select_group_seperate_unit(selectable_units)
+			return await select_group_seperate_unit(selectable_units)
 	
-	await end_selection
+	return []
 
 
-func select_unit_single(group_unit : Array[Unit]) -> void:
+func select_unit_single(group_unit : Array[Unit]) -> Unit:
 	is_unit_selecting = true
 	selected_index = 0
 	selection_size = group_unit.size()
@@ -352,9 +367,16 @@ func select_unit_single(group_unit : Array[Unit]) -> void:
 		connect_select_show_signal(unit)
 	
 	selection_index_changed.emit(0)
+	
+	await end_selection
+	
+	if selected_index != -1:
+		return group_unit[selected_index]
+	else:
+		return null
 
 
-func select_group_all_unit(group_unit : Array[Unit]) -> void:
+func select_group_all_unit(group_unit : Array[Unit]) -> Array[Unit]:
 	is_unit_selecting = true
 	selected_index = 0
 	selection_size = 1
@@ -365,9 +387,16 @@ func select_group_all_unit(group_unit : Array[Unit]) -> void:
 		connect_select_show_signal(unit)
 	
 	selection_index_changed.emit(0)
+	
+	await end_selection
+	
+	if selected_index != -1:
+		return group_unit
+	else:
+		return []
 
 
-func select_group_seperate_unit(group_unit : Array[Unit]) -> void:
+func select_group_seperate_unit(group_unit : Array[Unit]) -> Array[Unit]:
 	is_unit_selecting = true
 	selected_index = 0
 	selection_size = 2
@@ -378,9 +407,19 @@ func select_group_seperate_unit(group_unit : Array[Unit]) -> void:
 		connect_select_show_signal(unit)
 	
 	selection_index_changed.emit(0)
+	
+	await end_selection
+	
+	match(selected_index as Unit.Group):
+		Unit.Group.ALLY:
+			return ally_units.duplicate()
+		Unit.Group.ENEMY:
+			return enemy_units.duplicate()
+		_:
+			return []
 
 
-func connect_select_show_signal(unit : Unit)-> void:
+func connect_select_show_signal(unit : Unit) -> void:
 	if !selection_index_changed.is_connected(unit.show_select_ui):
 			selection_index_changed.connect(unit.show_select_ui)
 
@@ -394,47 +433,30 @@ func select_cancel() -> void:
 func basic_atk(char_sheet : CharacterSheet, target : Unit) -> void:
 	await display_text(["%s does a basic attack!" % char_sheet.name])
 	await display_text([
-		"%s took %d damage!" % [target.char_sheet.name, target.take_damage(char_sheet.dmg)]
+		"%s took %d damage!" % [target.char_sheet.name, target.hurt(char_sheet.dmg)]
 	])
 	end_turn.emit()
 
 
+func hide_actions() -> void:
+	%Actions.hide()
+	UiNavigation.clear_cancel()
+
+
 func skill_initialize(skill : SkillResource) -> void:
-	print(skill.name)
-	await select(skill.target_group, skill.target_type)
+	var selected_units : Array[Unit] = await select(skill.target_group, skill.target_type, skill.targetable_self)
+	skill.initialize(self, cur_player_unit, selected_units, false)
 
 
 func item_initialize(item : Item) -> void:
 	print(item.name)
 
 
-func _on_attack_pressed() -> void:
-	select_unit_single(enemy_units)
-	await end_selection
-	if selected_index != -1:
-		basic_atk(cur_char_sheet, enemy_units[selected_index])
-
-
-func _on_run_pressed() -> void:
-	await display_text(["You tried to [wave]run away!", "..."])
-	
-	if randf_range(0.0, 1.0) >= 0.5:
-		await display_text(["You successfully ran away!", "Run now you little chicken 🐔🐤"])
-		#TODO play chick sfx :)
-		get_reward = false
-		direct_end_fight = true
-		return_to_world()
-	else:
-		await display_text(["It failed!"])
-		end_turn.emit()
-	
-
 func display_text(texts : Array[String]) -> void:
 	%Actions.hide()
 	%DisplayText.show()
 	
 	set_process(true)
-	
 	for t : String in texts:
 		%Next.hide()
 		%BlinkNext.stop()
@@ -446,14 +468,15 @@ func display_text(texts : Array[String]) -> void:
 	
 	set_process(false)
 	await get_tree().create_timer(0.1).timeout
-	
+	%DisplayText.hide()
+
 
 func create_num_popup(value : int, num_pos : Vector2, color : Color = Color.WHITE) -> void:
 	var num : Label = NUMBER_POP_UP.instantiate()
 	
 	num_pos += Vector2.UP * 3
 	
-	add_child(num)
+	environment_add_child(num)
 	num.text = str(value)
 	num.global_position = num_pos + Vector2.DOWN * 3
 	num.set("theme_override_colors/font_color", color)
@@ -470,3 +493,37 @@ func create_num_popup(value : int, num_pos : Vector2, color : Color = Color.WHIT
 		).set_trans(Tween.TRANS_LINEAR).set_delay(1.2)
 	
 	tween.finished.connect(func(): num.queue_free())
+
+
+func environment_add_child(node: Node, force_readable_name: bool = false, internal: InternalMode = 0) -> void:
+	%EnvironmentContainer.add_child(node, force_readable_name, internal)
+
+
+func _on_attack_pressed() -> void:
+	var unit : Unit = await select_unit_single(enemy_units)
+	if unit:
+		basic_atk(cur_char_sheet, unit)
+
+
+func _on_skill_button_pressed() -> void:
+	if %SkillContainer.get_child_count() != 0:
+		%SkillContainer.get_child(0).grab_focus()
+
+
+func _on_item_button_pressed() -> void:
+	if %ItemContainer.get_child_count() != 0:
+		%ItemContainer.get_child(0).grab_focus()
+
+
+func _on_run_pressed() -> void:
+	await display_text(["You tried to [wave]run away!", "..."])
+	
+	if randf_range(0.0, 1.0) >= 0.5:
+		await display_text(["You successfully ran away!", "Run now you little chicken 🐔🐤"])
+		#TODO play chick sfx :)
+		get_reward = false
+		direct_end_fight = true
+		return_to_world()
+	else:
+		await display_text(["It failed!"])
+		end_turn.emit()

@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://docc6xin1bqou"]
+[gd_scene load_steps=17 format=3 uid="uid://docc6xin1bqou"]
 
 [ext_resource type="Script" path="res://scripts/battle_system/battle_manager.gd" id="1_626np"]
 [ext_resource type="Texture2D" uid="uid://db0nefci05mgl" path="res://art/image (1).png" id="2_4xsu6"]
+[ext_resource type="Texture2D" uid="uid://bg3tbvya8betf" path="res://art/shapes/Square_8x8.png" id="3_mexw0"]
 [ext_resource type="FontFile" uid="uid://c56rtacbksa5q" path="res://art/04B_11__.TTF" id="3_ur4j6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xg6sh"]
@@ -72,26 +73,59 @@ process_mode = 3
 layer = 2
 script = ExtResource("1_626np")
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -10
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12549, 0.12549, 0.12549, 1)
+
+[node name="Environment" type="Control" parent="."]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -55.0
+offset_right = 120.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="EnvironmentContainer" type="Node2D" parent="Environment"]
 unique_name_in_owner = true
 y_sort_enabled = true
+position = Vector2(120, 40)
 
-[node name="Background" type="Sprite2D" parent="Environment"]
+[node name="Background" type="Sprite2D" parent="Environment/EnvironmentContainer"]
 unique_name_in_owner = true
-position = Vector2(121, 65)
 texture = ExtResource("2_4xsu6")
 hframes = 3
 vframes = 3
 
-[node name="AllyContainer" type="Marker2D" parent="Environment"]
+[node name="AllyContainer" type="Marker2D" parent="Environment/EnvironmentContainer"]
 unique_name_in_owner = true
 y_sort_enabled = true
-position = Vector2(60, 91)
+position = Vector2(-60, 25)
 
-[node name="EnemyContainer" type="Marker2D" parent="Environment"]
+[node name="EnemyContainer" type="Marker2D" parent="Environment/EnvironmentContainer"]
 unique_name_in_owner = true
 y_sort_enabled = true
-position = Vector2(180, 91)
+position = Vector2(60, 25)
+
+[node name="Sprite2D" type="Sprite2D" parent="Environment"]
+visible = false
+position = Vector2(120, 40)
+scale = Vector2(30, 10)
+texture = ExtResource("3_mexw0")
 
 [node name="UI" type="Control" parent="."]
 unique_name_in_owner = true
@@ -313,20 +347,12 @@ unique_name_in_owner = true
 wait_time = 0.8
 script = SubResource("GDScript_oytr6")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-z_index = -10
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.12549, 0.12549, 0.12549, 1)
-
 [connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/AttackButton" to="." method="show_action_menu" binds= [1]]
 [connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/AttackButton" to="." method="_on_attack_pressed" flags=3]
 [connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/SkillButton" to="." method="show_action_menu" binds= [2]]
+[connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/SkillButton" to="." method="_on_skill_button_pressed"]
 [connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/ItemButton" to="." method="show_action_menu" binds= [3]]
+[connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/ItemButton" to="." method="_on_item_button_pressed"]
 [connection signal="focus_entered" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/RunButton" to="." method="show_action_menu" binds= [0]]
 [connection signal="pressed" from="UI/PlayerPanel/MarginContainer/Actions/MainAction/ActionContainer/RunButton" to="." method="_on_run_pressed"]
 [connection signal="timeout" from="UI/PlayerPanel/MarginContainer/DisplayText/Next/BlinkNext" to="UI/PlayerPanel/MarginContainer/DisplayText/Next/BlinkNext" method="_on_timeout"]

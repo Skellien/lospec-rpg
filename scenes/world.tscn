@@ -53,7 +53,7 @@ texture = ExtResource("1_qwsel")
 physics_layer_0/collision_layer = 2
 sources/0 = SubResource("TileSetAtlasSource_54e3y")
 
-[sub_resource type="Resource" id="Resource_u82ws"]
+[sub_resource type="Resource" id="Resource_l5n3a"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
 name = "Skeddles"
@@ -68,7 +68,7 @@ ExtResource("6_4oij4"): 0,
 ExtResource("7_63jel"): 1
 }
 
-[sub_resource type="Resource" id="Resource_4j0yf"]
+[sub_resource type="Resource" id="Resource_7x85v"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
 name = "Smiley"
@@ -113,7 +113,7 @@ character_name = "skeddles"
 sprite_sheet = ExtResource("3_dnasa")
 
 [node name="Player" parent="Player" instance=ExtResource("1_qpucf")]
-party = Array[ExtResource("5_67ydd")]([SubResource("Resource_u82ws"), SubResource("Resource_4j0yf")])
+party = Array[ExtResource("5_67ydd")]([SubResource("Resource_l5n3a"), SubResource("Resource_7x85v")])
 
 [node name="BattleTrigger" type="Area2D" parent="."]
 z_index = 2
@@ -121,7 +121,7 @@ y_sort_enabled = true
 position = Vector2(130, 47)
 collision_layer = 0
 script = ExtResource("5_yord7")
-enemies = Array[ExtResource("6_8c77f")]([ExtResource("10_inias"), ExtResource("10_inias"), SubResource("Resource_0v6bm")])
+enemies = Array[ExtResource("6_8c77f")]([ExtResource("10_inias"), ExtResource("10_inias"), SubResource("Resource_0v6bm"), ExtResource("10_inias")])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleTrigger"]
 shape = SubResource("RectangleShape2D_1kij5")

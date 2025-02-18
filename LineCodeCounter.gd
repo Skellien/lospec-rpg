@@ -16,15 +16,14 @@ func _run() -> void:
 		var file: FileAccess = FileAccess.open(script_file, FileAccess.READ)
 		if file:
 			while not file.eof_reached():
-				total_lines += 1
 				var text : String = file.get_line()
-				if text == "":
+				total_lines += 1
+				if text.is_empty():
 					blanks += 1
-					continue
-				if text.begins_with("#"):
+				elif text.begins_with("#"):
 					comments += 1
-					continue
-				codes += 1
+				else: 
+					codes += 1
 			file.close()
 			
 	print("Script count: ", script_files.size())
@@ -32,6 +31,7 @@ func _run() -> void:
 	print("Blanks: ", blanks)
 	print("Comments: ", comments)
 	print("Total lines: ", total_lines)
+
 
 func Get_script_files(dir: DirAccess) -> Array[String]:
 	var script_files: Array[String] = []

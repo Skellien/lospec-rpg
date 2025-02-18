@@ -42,7 +42,7 @@ signal mana_changed(value : int, max : int)
 
 
 @export_group("Skills")
-#@export var skills : Array[Skill]
+#@export var skills : Array[SkillResource]
 @export var skills : Dictionary
 
 var unit_ref : Unit
