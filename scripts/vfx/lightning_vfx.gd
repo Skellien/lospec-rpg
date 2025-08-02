@@ -15,6 +15,7 @@ func play_loop() -> void:
 func play_one_shot() -> void:
 	%AnimationPlayer.play("start")
 	emit_particle(true)
+	print("hello?")
 	await %AnimationPlayer.animation_finished
 	%AnimationPlayer.play("end")
 	await %AnimationPlayer.animation_finished
@@ -26,6 +27,7 @@ func emit_particle(one_shot : bool) -> void:
 	%Spark.restart()
 	%Flare.one_shot = one_shot
 	%Flare.restart()
+
 
 func stop() -> void:
 	%AnimationPlayer.play("end")

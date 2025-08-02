@@ -12,7 +12,7 @@ func _ready() -> void:
 	add_ui_inputs("Cancel", "ui_cancel")
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("Cancel"):
 		on_cancel.emit()
 

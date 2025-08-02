@@ -68,10 +68,11 @@ func revive(heal : int = 1):
 	heal(max(heal,1))
 	
 
-func hurt(dmg : int, ignore_def : bool = false) -> int:
+func hurt(dmg : int, ignore_def : bool = false, animation : String = "hurt") -> int:
 	var dmg_dealt : int = dmg if ignore_def else maxi(1, dmg - char_sheet.def)
 	char_sheet.cur_hp -= dmg_dealt
 	battle_manager.create_num_popup(dmg_dealt, %NumberPopupPoint.global_position)
+	animation_player.play(animation)
 	return dmg_dealt
 
 

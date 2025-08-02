@@ -1,7 +1,7 @@
-[gd_scene load_steps=29 format=3 uid="uid://buyo37ygjpooh"]
+[gd_scene load_steps=17 format=3 uid="uid://buyo37ygjpooh"]
 
-[ext_resource type="Texture2D" uid="uid://vg0a7xfxcfx1" path="res://art/vfx/lightning.png" id="1_1ayrl"]
-[ext_resource type="Script" path="res://scripts/vfx/lightning_vfx.gd" id="1_8bw0g"]
+[ext_resource type="Script" uid="uid://bmrxajryk6jdq" path="res://scripts/vfx/lightning_vfx.gd" id="1_8bw0g"]
+[ext_resource type="Material" uid="uid://bvgjfsc3v1qn4" path="res://material/lightning_shader.tres" id="2_qv7xt"]
 [ext_resource type="Texture2D" uid="uid://bdrva16n4frvv" path="res://art/shapes/Diamond_8x8.png" id="2_vdfp5"]
 [ext_resource type="Texture2D" uid="uid://dv8frr1cco8lw" path="res://art/shapes/Circle_16x16.png" id="3_ldp48"]
 
@@ -10,26 +10,26 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
+tracks/0/path = NodePath("Lightning:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
+"update": 1,
+"values": [false]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Lightning:visible")
+tracks/1/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_i3ees"]
@@ -37,186 +37,62 @@ resource_name = "end"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
+tracks/0/path = NodePath("Lightning:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 1.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Lightning:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
 "times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
-
-[sub_resource type="Animation" id="Animation_ysrxs"]
-resource_name = "start"
-length = 0.16
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [1.0, 0.0]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Lightning:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
+
+[sub_resource type="Animation" id="Animation_ysrxs"]
+resource_name = "start"
+length = 0.16667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lightning:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Lightning:material:shader_parameter/vanishing_value")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_f25df"]
 _data = {
-"RESET": SubResource("Animation_mrgyu"),
-"end": SubResource("Animation_i3ees"),
-"start": SubResource("Animation_ysrxs")
+&"RESET": SubResource("Animation_mrgyu"),
+&"end": SubResource("Animation_i3ees"),
+&"start": SubResource("Animation_ysrxs")
 }
-
-[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_1edft"]
-input_name = "color"
-
-[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_5kx5u"]
-operator = 2
-
-[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_f2l4w"]
-parameter_name = "Texture2DParameter"
-texture_type = 1
-texture_repeat = 1
-
-[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_yi7hm"]
-expanded_output_ports = [0]
-source = 5
-
-[sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_xtbne"]
-
-[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_rfkv7"]
-input_name = "time"
-
-[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_3mwe4"]
-default_input_values = [0, Vector2(0, 0), 1, Vector2(1, 0)]
-op_type = 0
-operator = 2
-
-[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_5vqrv"]
-parameter_name = "speed"
-
-[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_fy3h8"]
-
-[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_egddm"]
-parameter_name = "vanishing_value"
-hint = 1
-
-[sub_resource type="VisualShader" id="VisualShader_e46t0"]
-code = "shader_type canvas_item;
-render_mode blend_add;
-
-uniform float vanishing_value : hint_range(0, 1);
-uniform vec2 speed;
-uniform sampler2D Texture2DParameter : source_color, repeat_enable;
-
-
-
-void fragment() {
-// Input:10
-	vec4 n_out10p0 = COLOR;
-
-
-// FloatParameter:9
-	float n_out9p0 = vanishing_value;
-
-
-// Input:5
-	float n_out5p0 = TIME;
-
-
-// Vector2Parameter:7
-	vec2 n_out7p0 = speed;
-
-
-// VectorOp:6
-	vec2 n_out6p0 = vec2(n_out5p0) * n_out7p0;
-
-
-// UVFunc:4
-	vec2 n_in4p1 = vec2(1.00000, 1.00000);
-	vec2 n_out4p0 = n_out6p0 * n_in4p1 + UV;
-
-
-	vec4 n_out3p0;
-// Texture2D:3
-	n_out3p0 = texture(Texture2DParameter, n_out4p0);
-	float n_out3p1 = n_out3p0.r;
-
-
-// SmoothStep:8
-	float n_in8p1 = 1.00000;
-	float n_out8p0 = smoothstep(n_out9p0, n_in8p1, n_out3p1);
-
-
-// VectorOp:11
-	vec3 n_out11p0 = vec3(n_out10p0.xyz) * vec3(n_out8p0);
-
-
-// Output:0
-	COLOR.rgb = n_out11p0;
-
-
-}
-"
-graph_offset = Vector2(-316.88, -28.8503)
-mode = 1
-modes/blend = 1
-flags/light_only = false
-nodes/fragment/0/position = Vector2(1820, 220)
-nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DParameter_f2l4w")
-nodes/fragment/2/position = Vector2(-20, 380)
-nodes/fragment/3/node = SubResource("VisualShaderNodeTexture_yi7hm")
-nodes/fragment/3/position = Vector2(420, 300)
-nodes/fragment/4/node = SubResource("VisualShaderNodeUVFunc_xtbne")
-nodes/fragment/4/position = Vector2(0, 80)
-nodes/fragment/5/node = SubResource("VisualShaderNodeInput_rfkv7")
-nodes/fragment/5/position = Vector2(-600, -40)
-nodes/fragment/6/node = SubResource("VisualShaderNodeVectorOp_3mwe4")
-nodes/fragment/6/position = Vector2(-259.777, 57.5236)
-nodes/fragment/7/node = SubResource("VisualShaderNodeVec2Parameter_5vqrv")
-nodes/fragment/7/position = Vector2(-580, 160)
-nodes/fragment/8/node = SubResource("VisualShaderNodeSmoothStep_fy3h8")
-nodes/fragment/8/position = Vector2(840, 260)
-nodes/fragment/9/node = SubResource("VisualShaderNodeFloatParameter_egddm")
-nodes/fragment/9/position = Vector2(400, 0)
-nodes/fragment/10/node = SubResource("VisualShaderNodeInput_1edft")
-nodes/fragment/10/position = Vector2(960, 80)
-nodes/fragment/11/node = SubResource("VisualShaderNodeVectorOp_5kx5u")
-nodes/fragment/11/position = Vector2(1380, 300)
-nodes/fragment/connections = PackedInt32Array(2, 0, 3, 2, 4, 0, 3, 0, 6, 0, 4, 2, 7, 0, 6, 1, 9, 0, 8, 0, 3, 1, 8, 2, 8, 0, 11, 1, 11, 0, 0, 0, 10, 0, 11, 0, 5, 0, 6, 0)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nuvyg"]
-shader = SubResource("VisualShader_e46t0")
-shader_parameter/vanishing_value = 0.0
-shader_parameter/speed = Vector2(-3, 0)
-shader_parameter/Texture2DParameter = ExtResource("1_1ayrl")
 
 [sub_resource type="Curve" id="Curve_rffw1"]
 _data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -243,6 +119,7 @@ emission_ring_axis = Vector3(0, 0, 1)
 emission_ring_height = 5.0
 emission_ring_radius = 5.0
 emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
 direction = Vector3(0, 1, 0)
 initial_velocity_min = -50.0
 initial_velocity_max = -40.0
@@ -275,13 +152,13 @@ script = ExtResource("1_8bw0g")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
 libraries = {
-"": SubResource("AnimationLibrary_f25df")
+&"": SubResource("AnimationLibrary_f25df")
 }
 
 [node name="Lightning" type="Line2D" parent="."]
 unique_name_in_owner = true
 visible = false
-material = SubResource("ShaderMaterial_nuvyg")
+material = ExtResource("2_qv7xt")
 points = PackedVector2Array(-1, -101, -1, 0)
 width = 30.0
 default_color = Color(1, 0.682353, 0, 1)
@@ -291,15 +168,15 @@ texture_mode = 1
 unique_name_in_owner = true
 position = Vector2(0, -3)
 amount = 18
-process_material = SubResource("ParticleProcessMaterial_fiuxj")
 texture = ExtResource("2_vdfp5")
 lifetime = 0.2
 explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_fiuxj")
 
 [node name="Flare" type="GPUParticles2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -2)
 amount = 1
-process_material = SubResource("ParticleProcessMaterial_jt8aj")
 texture = ExtResource("3_ldp48")
 lifetime = 0.15
+process_material = SubResource("ParticleProcessMaterial_jt8aj")

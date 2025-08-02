@@ -1,18 +1,20 @@
-[gd_scene load_steps=20 format=4 uid="uid://b364qqtpututw"]
+[gd_scene load_steps=23 format=4 uid="uid://b364qqtpututw"]
 
 [ext_resource type="PackedScene" uid="uid://dik8pqs6immb7" path="res://scenes/player.tscn" id="1_qpucf"]
 [ext_resource type="Texture2D" uid="uid://djqeqcpfbjjxi" path="res://art/tileset.png" id="1_qwsel"]
 [ext_resource type="PackedScene" uid="uid://rxiy1bn4tm2u" path="res://scenes/character.tscn" id="2_6dtdq"]
 [ext_resource type="Texture2D" uid="uid://bxsbc7vc6xsxi" path="res://art/characters/skeddles/skeddles.png" id="3_dnasa"]
-[ext_resource type="Script" path="res://scripts/character_sheet/character_sheet.gd" id="5_67ydd"]
-[ext_resource type="Script" path="res://scripts/battle_system/battle_trigger.gd" id="5_yord7"]
+[ext_resource type="Script" uid="uid://dfoblpsa1215k" path="res://scripts/character_sheet/character_sheet.gd" id="5_67ydd"]
+[ext_resource type="Script" uid="uid://brmwvgh77a7ig" path="res://scripts/battle_system/battle_trigger.gd" id="5_yord7"]
 [ext_resource type="Resource" uid="uid://75xe5isavtju" path="res://resource/skill/lightning.tres" id="6_4oij4"]
-[ext_resource type="Script" path="res://scripts/battle_system/ai/CharacterAP.gd" id="6_8c77f"]
+[ext_resource type="Script" uid="uid://cdt6i5iultcxr" path="res://scripts/battle_system/ai/CharacterAP.gd" id="6_8c77f"]
+[ext_resource type="Script" uid="uid://bhwfphr11mqkm" path="res://scripts/skill/skill_resource.gd" id="6_xo05s"]
 [ext_resource type="Resource" uid="uid://dm02dqyd5x646" path="res://resource/skill/spin_to_wheel.tres" id="7_63jel"]
 [ext_resource type="Texture2D" uid="uid://dxllgjcrdt3e6" path="res://art/characters/skeddles/smiley.png" id="7_qsdja"]
 [ext_resource type="Resource" uid="uid://dlddn7gpxeu45" path="res://resource/action_priorities/enemy_smiley.tres" id="10_inias"]
-[ext_resource type="Script" path="res://scripts/battle_system/ai/ActionPriority.gd" id="10_ocnws"]
+[ext_resource type="Script" uid="uid://l1jjykc1h18g" path="res://scripts/battle_system/ai/ActionPriority.gd" id="10_ocnws"]
 [ext_resource type="Resource" uid="uid://dkf51paik6ls2" path="res://resource/character_sheet/skeddles.tres" id="12_c3lmx"]
+[ext_resource type="Script" uid="uid://dumuatg57a5xv" path="res://scripts/cutscene.gd" id="14_pld4k"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54e3y"]
 texture = ExtResource("1_qwsel")
@@ -53,7 +55,7 @@ texture = ExtResource("1_qwsel")
 physics_layer_0/collision_layer = 2
 sources/0 = SubResource("TileSetAtlasSource_54e3y")
 
-[sub_resource type="Resource" id="Resource_l5n3a"]
+[sub_resource type="Resource" id="Resource_dss4m"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
 name = "Skeddles"
@@ -63,12 +65,12 @@ max_mana = 0
 dmg = 1
 def = 0
 magic = 0
-skills = {
+skills = Dictionary[ExtResource("6_xo05s"), int]({
 ExtResource("6_4oij4"): 0,
 ExtResource("7_63jel"): 1
-}
+})
 
-[sub_resource type="Resource" id="Resource_7x85v"]
+[sub_resource type="Resource" id="Resource_7t5mc"]
 resource_local_to_scene = true
 script = ExtResource("5_67ydd")
 name = "Smiley"
@@ -78,7 +80,7 @@ max_mana = 0
 dmg = 1
 def = 0
 magic = 0
-skills = {}
+skills = Dictionary[ExtResource("6_xo05s"), int]({})
 
 [sub_resource type="Resource" id="Resource_0v6bm"]
 script = ExtResource("6_8c77f")
@@ -87,6 +89,8 @@ action_priorities = Array[ExtResource("10_ocnws")]([])
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1kij5"]
 size = Vector2(46, 46)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wkpb1"]
 
 [node name="Node2D" type="Node2D"]
 y_sort_enabled = true
@@ -113,7 +117,7 @@ character_name = "skeddles"
 sprite_sheet = ExtResource("3_dnasa")
 
 [node name="Player" parent="Player" instance=ExtResource("1_qpucf")]
-party = Array[ExtResource("5_67ydd")]([SubResource("Resource_l5n3a"), SubResource("Resource_7x85v")])
+party = Array[ExtResource("5_67ydd")]([SubResource("Resource_dss4m"), SubResource("Resource_7t5mc")])
 
 [node name="BattleTrigger" type="Area2D" parent="."]
 z_index = 2
@@ -126,4 +130,22 @@ enemies = Array[ExtResource("6_8c77f")]([ExtResource("10_inias"), ExtResource("1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BattleTrigger"]
 shape = SubResource("RectangleShape2D_1kij5")
 
+[node name="Cutscene" type="Node2D" parent="."]
+script = ExtResource("14_pld4k")
+
+[node name="CutsceneTrigger" type="Area2D" parent="Cutscene"]
+modulate = Color(1, 0.682353, 0, 1)
+position = Vector2(280, -82)
+collision_layer = 0
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Cutscene/CutsceneTrigger"]
+shape = SubResource("RectangleShape2D_wkpb1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Cutscene"]
+
+[node name="Camera2D" type="Camera2D" parent="Cutscene"]
+position = Vector2(407, -244)
+
 [connection signal="body_entered" from="BattleTrigger" to="BattleTrigger" method="_on_body_entered"]
+[connection signal="body_entered" from="Cutscene/CutsceneTrigger" to="Cutscene" method="_on_cutscene_trigger_body_entered"]

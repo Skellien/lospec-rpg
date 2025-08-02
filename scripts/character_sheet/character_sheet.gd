@@ -16,7 +16,7 @@ class_name CharacterSheet extends Resource
 		max_mana = value
 		max_mana = maxi(0, max_mana)
 		mana_changed.emit(cur_mana, max_mana)
-		
+
 @export_range(0, 0, 1, "or_greater") var dmg : int
 
 @export var def : int
@@ -43,7 +43,7 @@ signal mana_changed(value : int, max : int)
 
 @export_group("Skills")
 #@export var skills : Array[SkillResource]
-@export var skills : Dictionary
+@export var skills : Dictionary[SkillResource, int]
 
 var unit_ref : Unit
 

@@ -37,11 +37,9 @@ func start() -> void:
 		
 		#burn effect
 		target.character_sprite.modulate = hit_color
-		target.animation_player.pause()
 		
 		get_tree().create_timer(1.8).timeout.connect(
 			func() -> void:
-				target.animation_player.play()
 				get_tree().create_tween().tween_property(target.character_sprite,"modulate", Color.WHITE, 1.5)
 		)
 	
